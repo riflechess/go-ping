@@ -280,10 +280,12 @@ func main() {
 	var timeoutMs int
 	var intervalSec int
 	var syntheticPatterns stringList
+	var printHosts bool
 
 	flag.IntVar(&timeoutMs, "timeout", 5000, "timeout in milliseconds per ping")
 	flag.Var(&syntheticPatterns, "s", "synthetic host pattern like host-[001:004] (repeatable)")
 	flag.IntVar(&intervalSec, "i", 1, "seconds between pings")
+	flag.BoolVar(&printHosts, "printhosts", false, "just print the expanded host list and exit")
 	flag.Parse()
 
 	var hosts []string
@@ -301,6 +303,14 @@ func main() {
 	} else {
 		fmt.Println("Usage: go-ping [-i seconds] [-s pattern] host1 host2 ...")
 		os.Exit(1)
+	}
+
+	// if -printhosts is set, dump the list and quit
+	if printHosts {
+		for _, h := range hosts {
+			fmt.Println(h)
+		}
+		return
 	}
 
 	hostOrder = hosts
